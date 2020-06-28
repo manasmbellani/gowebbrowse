@@ -167,7 +167,7 @@ func performCheck(id string, check sigCheck, domain string, company string) {
 
 // Worker function parses each YAML signature file, opens the URL/runs search on appropriatepath based on type
 func worker(sigFileContents map[string]signFileStruct, sigFilesChan chan string,
-	domain string, company string, outfolder string, wg *sync.WaitGroup) {
+	domain string, company string, wg *sync.WaitGroup) {
 
 	// Need to let the waitgroup know that the function is done at the end...
 	defer wg.Done()
@@ -197,12 +197,10 @@ func main() {
 	companyPtr := flag.String("c", "", "Company name to investigate")
 	verbosePtr := flag.Bool("v", false, "Show commands as executed+output")
 	maxThreadsPtr := flag.Int("mt", 20, "Max number of goroutines to launch")
-	outfolderPtr := flag.String("o", "out-codereview", "Output folder to write output files")
 
 	flag.Parse()
 
 	maxThreads := *maxThreadsPtr
-	outfolder := *outfolderPtr
 	domain := *domainPtr
 	company := *companyPtr
 
@@ -221,11 +219,6 @@ func main() {
 	if !verbose {
 		log.SetFlags(0)
 		log.SetOutput(ioutil.Discard)
-	}
-
-	// Create ouput folder to write files
-	if outfolder != "" {
-		_ = os.Mkdir(outfolder, 0777)
 	}
 
 	if *pathsWithSigFiles == "" {
@@ -315,7 +308,7 @@ func main() {
 
 		log.Printf("Launching goroutine: %d on domain: %s, company: %s\n", i,
 			domain, company)
-		go worker(sigFileContents, sigFilesChan, domain, company, outfolder, &wg)
+		go worker(sigFileContents, sigFilesChan, domain, company, &wg)
 	}
 
 	// Loop through each signature file and pass it to each thread to process
