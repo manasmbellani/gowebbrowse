@@ -115,6 +115,7 @@ func openbrowser(url string) {
 
 func subParams(baseStr string, domain string, company string) string {
 	baseStr = strings.ReplaceAll(baseStr, "{domain}", domain)
+	baseStr = strings.ReplaceAll(baseStr, "{hostname}", domain)
 	baseStr = strings.ReplaceAll(baseStr, "{company}", company)
 	return baseStr
 }
