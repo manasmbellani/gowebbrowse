@@ -161,7 +161,7 @@ func performCheck(id string, check sigCheck, domain string, company string) {
 	}
 
 	if notes != "" {
-		fmt.Printf("[%s]: %s\n", id, notes)
+		fmt.Printf("[!] [%s]: %s\n", id, notes)
 	}
 }
 
