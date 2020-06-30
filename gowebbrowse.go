@@ -126,7 +126,7 @@ func performCheck(id string, check sigCheck, domain string, company string) {
 	urls := check.URL
 	searches := check.Search
 
-	if checkType == "" || checkType == "browser" {
+	if checkType == "" || checkType == "browser" || checkType == "browse" {
 		if urls != nil {
 			for _, url := range urls {
 				suburl := subParams(url, domain, company)
