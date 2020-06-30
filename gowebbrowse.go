@@ -162,7 +162,8 @@ func performCheck(id string, check sigCheck, domain string, company string) {
 	}
 
 	if notes != "" {
-		fmt.Printf("[!] [%s]: %s\n", id, notes)
+		subnotes := subParams(notes, domain, company)
+		fmt.Printf("[!] [%s]: %s\n", id, subnotes)
 	}
 }
 
