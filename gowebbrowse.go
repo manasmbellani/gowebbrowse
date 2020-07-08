@@ -167,6 +167,12 @@ func performCheck(id string, check sigCheck, domain string, company string) {
 	}
 }
 
+// Get file name without extension and path only
+func fileNameWOExt(filePath string) string {
+	fileName := filepath.Base(filePath)
+	return strings.TrimSuffix(fileName, filepath.Ext(fileName))
+}
+
 // Worker function parses each YAML signature file, opens the URL/runs search on appropriatepath based on type
 func worker(sigFileContents map[string]signFileStruct, sigFilesChan chan string,
 	domain string, company string, wg *sync.WaitGroup) {
@@ -183,10 +189,17 @@ func worker(sigFileContents map[string]signFileStruct, sigFilesChan chan string,
 
 		// First get the list of all checks to perform from file
 		myChecks := sigFileContent.Checks
-		checkId := sigFileContent.ID
 
+		// Get the check ID from the signature file name itself, if not defined
+		// within signature file
+		checkID := sigFileContent.ID
+		if checkID == "" {
+			checkID = fileNameWOExt(sigFile)
+		}
+
+		// Now launch the check
 		for _, myCheck := range myChecks {
-			performCheck(checkId, myCheck, domain, company)
+			performCheck(checkID, myCheck, domain, company)
 		}
 	}
 	//log.Printf("Completed check on path: %s\n", target["basepath"])
