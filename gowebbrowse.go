@@ -197,7 +197,7 @@ func worker(sigFileContents map[string]signFileStruct, sigFilesChan chan string,
 			checkID = fileNameWOExt(sigFile)
 		}
 
-		// Now launch the check
+		// Now, launch check itself
 		for _, myCheck := range myChecks {
 			performCheck(checkID, myCheck, domain, company)
 		}
@@ -220,13 +220,13 @@ func main() {
 	company := *companyPtr
 
 	if domain == "" {
-		fmt.Println("[-] Domain must be provided")
-		log.Fatalf("[-] Domain must be provided")
+		log.Printf("[!] Note: Domain not provided\n")
+		//log.Fatalf("[-] Domain must be provided")
 	}
 
 	if company == "" {
-		fmt.Println("[-] Company must be provided")
-		log.Fatalf("[-] Company must be provided")
+		log.Printf("[!] Note: Company must be provided")
+		//log.Fatalf("[-] Company must be provided")
 	}
 
 	// Check if logging should be enabled
