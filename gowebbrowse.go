@@ -219,6 +219,12 @@ func main() {
 	domain := *domainPtr
 	company := *companyPtr
 
+	// signature files must be provided
+	if *pathsWithSigFiles == "" {
+		fmt.Println("[-] Signature files must be provided.")
+		log.Fatalf("[-] Signature files must be provided.")
+	}
+
 	if domain == "" {
 		log.Printf("[!] Note: Domain not provided\n")
 		//log.Fatalf("[-] Domain must be provided")
@@ -234,11 +240,6 @@ func main() {
 	if !verbose {
 		log.SetFlags(0)
 		log.SetOutput(ioutil.Discard)
-	}
-
-	if *pathsWithSigFiles == "" {
-		fmt.Println("[-] Signature files must be provided.")
-		log.Fatalf("[-] Signature files must be provided.")
 	}
 
 	// List of all files in the folders/files above
