@@ -12,6 +12,7 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+	"time"
 
 	"gopkg.in/yaml.v2"
 )
@@ -173,9 +174,16 @@ func fileNameWOExt(filePath string) string {
 	return strings.TrimSuffix(fileName, filepath.Ext(fileName))
 }
 
+// sleep - perform sleeping operation
+func sleep(sleepTime int) {
+	if sleepTime > 0 {
+		time.Sleep(time.Duration(sleepTime) * time.Second)
+	}
+}
+
 // Worker function parses each YAML signature file, opens the URL/runs search on appropriatepath based on type
 func worker(sigFileContents map[string]signFileStruct, sigFilesChan chan string,
-	domain string, company string, wg *sync.WaitGroup) {
+	domain string, company string, sleeptime int, wg *sync.WaitGroup) {
 
 	// Need to let the waitgroup know that the function is done at the end...
 	defer wg.Done()
@@ -200,6 +208,9 @@ func worker(sigFileContents map[string]signFileStruct, sigFilesChan chan string,
 		// Now, launch check itself
 		for _, myCheck := range myChecks {
 			performCheck(checkID, myCheck, domain, company)
+
+			// Sleep if required for a certain period
+			sleep(sleeptime)
 		}
 	}
 	//log.Printf("Completed check on path: %s\n", target["basepath"])
@@ -211,7 +222,8 @@ func main() {
 	domainPtr := flag.String("d", "", "Domain name to investigate")
 	companyPtr := flag.String("c", "", "Company name to investigate")
 	verbosePtr := flag.Bool("v", false, "Show commands as executed+output")
-	maxThreadsPtr := flag.Int("mt", 20, "Max number of goroutines to launch")
+	maxThreadsPtr := flag.Int("mt", 1, "Max number of goroutines to launch")
+	sleepTime := flag.Int("s", 1, "Sleep Time between opening browsers")
 
 	flag.Parse()
 
@@ -324,7 +336,8 @@ func main() {
 
 		log.Printf("Launching goroutine: %d on domain: %s, company: %s\n", i,
 			domain, company)
-		go worker(sigFileContents, sigFilesChan, domain, company, &wg)
+		go worker(sigFileContents, sigFilesChan, domain, company, *sleepTime,
+			&wg)
 	}
 
 	// Loop through each signature file and pass it to each thread to process
