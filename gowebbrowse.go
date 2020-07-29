@@ -223,7 +223,7 @@ func main() {
 	companyPtr := flag.String("c", "", "Company name to investigate")
 	verbosePtr := flag.Bool("v", false, "Show commands as executed+output")
 	maxThreadsPtr := flag.Int("mt", 1, "Max number of goroutines to launch")
-	sleepTime := flag.Int("s", 1, "Sleep Time between opening browsers")
+	sleepTime := flag.Int("t", 1, "Sleep Time between opening browsers")
 
 	flag.Parse()
 
