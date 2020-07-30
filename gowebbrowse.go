@@ -122,7 +122,9 @@ func subParams(baseStr string, domain string, company string) string {
 }
 
 // Perform check e.g. open search in Google browser, run shodan search
-func performCheck(id string, check sigCheck, domain string, company string) {
+func performCheck(id string, check sigCheck, domain string, company string,
+	sleeptime int) {
+
 	notes := check.Notes
 	checkType := check.Type
 	urls := check.URL
@@ -133,6 +135,9 @@ func performCheck(id string, check sigCheck, domain string, company string) {
 			for _, url := range urls {
 				suburl := subParams(url, domain, company)
 				openbrowser(suburl)
+
+				// Sleep if required by user for a certain period
+				sleep(sleeptime)
 			}
 		}
 	} else if checkType == "google" {
@@ -143,6 +148,9 @@ func performCheck(id string, check sigCheck, domain string, company string) {
 					url := "https://www.google.com/search?q={subsearch}"
 					url = strings.ReplaceAll(url, "{subsearch}", subsearch)
 					openbrowser(url)
+
+					// Sleep if required by user for a certain period
+					sleep(sleeptime)
 				}
 			}
 		}
@@ -154,6 +162,9 @@ func performCheck(id string, check sigCheck, domain string, company string) {
 					url := "https://www.shodan.io/search?query={subsearch}"
 					url = strings.ReplaceAll(url, "{subsearch}", subsearch)
 					openbrowser(url)
+
+					// Sleep if required by user for a certain period
+					sleep(sleeptime)
 				}
 			}
 		}
@@ -207,10 +218,7 @@ func worker(sigFileContents map[string]signFileStruct, sigFilesChan chan string,
 
 		// Now, launch check itself
 		for _, myCheck := range myChecks {
-			performCheck(checkID, myCheck, domain, company)
-
-			// Sleep if required for a certain period
-			sleep(sleeptime)
+			performCheck(checkID, myCheck, domain, company, sleeptime)
 		}
 	}
 	//log.Printf("Completed check on path: %s\n", target["basepath"])
